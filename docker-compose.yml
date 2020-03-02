@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+ mlflow:
+  build:
+   context: ./mlflow-docker
+  volumes:
+   - ./mlflow-docker:/mlflow-storage/
+  expose:
+   - "5000"
+  ports:
+    - "5000:5000"
+
+ jupyter-notebook:
+  build:
+   context: ./jupyter-notebook-docker
+  volumes:
+   - ./src:/home/jovyan/work/
+  ports:
+   - "8888:8888"
+  depends_on:
+   - mlflow
+  environment:
+   MLFLOW_TRACKING_URI: 'http://mlflow:5000'
+
+
+
+

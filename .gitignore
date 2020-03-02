@@ -1,0 +1,4 @@
+venv/
+src/mlflow-storage
+mlflow-docker/mlruns
+mlflow-docker/.trash
