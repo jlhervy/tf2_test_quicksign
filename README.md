@@ -14,17 +14,16 @@ Le but est d'utiliser mlflow afin de logger des indicateurs d'entraînement, de 
 
 - Conversion du code python train_predict_2.py en Python 3 (pas beaucoup de changements). 
 - lint du code train_predict_2.py et conversion en jupyter notebook
-- Intégration de Poetry pour gérer les dépendances
-- Un venv est créé en local par Poetry, mais docker isole ses propores dépendances (lors du pip install).
+- Intégration de Poetry pour gérer les dépendances dans le docker
 - Intégration dans docker avec un docker-compose
 - Persistance des logs mlflow et des artifacts (modèles) avec des volumes docker. Cependant, mlflow ne supporte pas le stockage des artifacts directement sur docker, comme pour les logs (https://github.com/mlflow/mlflow/issues/902). Ils sont donc stockés dans deux dossiers différents.
 
 ## Description de la structure du projet 
 
 - **./jupyter-notebook-docker/ :** Contient le Dockerfile pour le jupyter-notebook ainsi que le fichier requirements.txt qui liste les dépendances Python.
+    - **pyproject.toml**: Permet de gérer les dépendances avec Poetry.
 - **./mlflow-docker/ :** Contient le Dockerfile pour mlflow ainsi qu'un dossier mlruns/ servant de volume docker pour stocker les logs mlflow.
 - **./src/ :** Dossier servant de volume docker pour l'image docker jupyter-notebook. Le dossier mlflow-storage/ permet de persister les modèles.
-- **pyproject.toml**: Permet de gérer les dépendances avec Poetry.
 - **docker-compose.yml**
 - **.gitignore/.dockerignore**
 
@@ -63,10 +62,10 @@ lockfile permettant de freeze les versions.
 Pour ajouter une dépendance, il faut l'installer avec poetry : 
 
     poetry add <ma-dépendance>
-    poetry export -f requirements.txt > jupyter-notebook-docker/requirements.txt
-    
+
+ou l'ajouter dans le fichier *jupyter-notebook-docker/pyproject.toml* 
+
 Puis, 
 
     docker-compose build && docker-compose-up
    
-Note : poetry ne gère pas pour l'instant tensorflow 2.0.0 : https://github.com/python-poetry/poetry/issues/1330
